@@ -1,0 +1,12 @@
+FROM ibmcom/ibmnode
+
+RUN mkdir /src
+
+WORKDIR /src
+COPY ./ /src
+RUN npm install
+
+EXPOSE 80
+ENV PORT=80
+
+CMD ["node", "app.js"]

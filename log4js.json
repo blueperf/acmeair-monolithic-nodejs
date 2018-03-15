@@ -1,12 +1,18 @@
 {
   "appenders": [
-    {
-      "type": "file",
-      "filename": "acmeair_main.log",
-      "maxLogSize": 20480,
-      "backups": 3,
-      "category": "main_app"
-    },{
+      {
+        "type": "file",
+        "filename": "acmeair_app.log",
+        "maxLogSize": 20480,
+        "backups": 3,
+        "category": "monolithic"
+      },{
+        "type": "file",
+        "filename": "acmeair_main.log",
+        "maxLogSize": 20480,
+        "backups": 3,
+        "category": "main_app"
+      },{
         "type": "file",
         "filename": "acmeair_auth.log",
         "maxLogSize": 20480,
@@ -54,18 +60,6 @@
         "maxLogSize": 20480,
         "backups": 3,
         "category": "flightservice"
-      },{
-        "type": "file",
-        "filename": "acmeair_mono.log",
-        "maxLogSize": 20480,
-        "backups": 3,
-        "category": "monolithic_app"
-      },{
-        "type": "file",
-        "filename": "acmeair_mono.log",
-        "maxLogSize": 20480,
-        "backups": 3,
-        "category": "monolithic"
       },{
         "type": "file",
         "filename": "acmeair_support.log",

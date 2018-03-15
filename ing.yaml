@@ -1,0 +1,15 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: acme-node
+spec:
+  rules:
+  - host: INGRESS_URL
+    http:
+      paths:
+      - path: /
+        backend:
+         serviceName: acme-node-service
+         servicePort: 80
+...

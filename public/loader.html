@@ -22,7 +22,6 @@
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dijit/themes/claro/claro.css">
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dijit/themes/dijit.css">
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   
   <script type="text/javascript" src="js/acmeair-common.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dojo/dojo.js" djConfig="parseOnLoad: true"></script>
@@ -46,7 +45,7 @@
     	loadLoaderConfigData();
     }
     
-    var basePath =  "rest/api/";
+    var basePath =  "";
         
     
     
@@ -69,7 +68,7 @@
     
     function loadLoaderConfigData() {
     	dojo.xhrGet({
-			url: 'http://' + window.location.host + '/customer/acmeair-cs/rest/api/customer/loader/query',
+			url: basePath.concat('loader/query'),
 			handleAs: "text",
 			load: function(response, ioArgs) {
 				updateFormData(response);
@@ -84,64 +83,16 @@
 		dijit.byId('customerSizeInput').set('value', loaderdata);
     }
     
-    <!-- load customers and then flights -->
-    function loadCustomerDB() {
+    function loadDB() {
     	showWaitDialog();
     	dojo.xhrGet({
     		content : {
     			numCustomers: dijit.byId('customerSizeInput').value
     		},
-    		url: 'http://' + window.location.host + '/customer/acmeair-cs/rest/api/customer/loader/load',
+    		url: basePath.concat('loader/load'),
     		load: function(response, ioArgs) {
     			hideWaitDialog();
-    			alert('Customer Database Loaded, response: ' + response);
-    		},
-    		error: function(response, ioArgs) {
-    			hideWaitDialog();
-    			alert('error loaddb, response: ' + response);
-    		}
-    	});
-    }
-    
-    function loadFlightDB() {
-    	showWaitDialog();
-    	dojo.xhrGet({
-    		url: 'http://' + window.location.host + '/flight/acmeair-fs/rest/api/flights/loader/load',
-    		load: function(response, ioArgs) {
-    			hideWaitDialog();
-    			alert('Flight Database Loaded, response: ' + response);
-    		},
-    		error: function(response, ioArgs) {
-    			hideWaitDialog();
-    			alert('error loaddb, response: ' + response);
-    		}
-    	});
-    	
-    }
-    
-     function clearSessionDB() {
-    	showWaitDialog();
-    	dojo.xhrGet({
-    		url: 'http://' + window.location.host + '/auth/acmeair-as/rest/api/login/loader/load',
-    		load: function(response, ioArgs) {
-    			hideWaitDialog();
-    			alert('Session Database Cleared, response: ' + response);
-    		},
-    		error: function(response, ioArgs) {
-    			hideWaitDialog();
-    			alert('error loaddb, response: ' + response);
-    		}
-    	});
-    	
-    }
-    
-     function clearBookingDB() {
-    	showWaitDialog();
-    	dojo.xhrGet({
-    		url: 'http://' + window.location.host + '/booking/acmeair-bs/rest/api/bookings/loader/load',
-    		load: function(response, ioArgs) {
-    			hideWaitDialog();
-    			alert('Booking Database Cleared, response: ' + response);
+    			alert('Database Loaded, response: ' + response);
     		},
     		error: function(response, ioArgs) {
     			hideWaitDialog();
@@ -231,8 +182,7 @@
 			<h2>Loader Configuration </h2>
 			<br/>
       		Number of Customers to Load: <input type="text" dojoType="dijit.form.TextBox" id="customerSizeInput" data-dojo-props="trim:true" required="true"></input><br/>
-      		<button dojoType="dijit.form.Button" id="loadDatabaseButton" onClick="clearSessionDB();clearBookingDB();loadCustomerDB();loadFlightDB();">(Re)Load the Database</button>
-      		<!-- <button dojoType="dijit.form.Button" id="loadDatabaseButton2" onClick="loadDB2()">(Re)Load the Flight Database</button>-->
+      		<button dojoType="dijit.form.Button" id="loadDatabaseButton" onClick="loadDB()">Load the Database</button>
       		</br/>						
 		</div>
 	</div>

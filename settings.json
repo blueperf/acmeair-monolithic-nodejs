@@ -1,52 +1,13 @@
 {
-	"monolithic_port":9085,
-	"monolithicContextRoot": "/rest/api",	
-		
-	"main_port":9080,
-	"mainContextRoot": "/acmeair/rest/api",
-		
-	"authservice_port": 9083,
-	"authContextRoot": "/acmeair-as/rest/api",
-		
-	"customerservice_port": 9081,
-	"customerContextRoot": "/acmeair-cs/rest/api",
-	
-	"flightservice_port": 9082,
-	"flightContextRoot": "/acmeair-fs/rest/api",
-	
-	"bookingservice_port": 9084,
-	"bookingContextRoot": "/acmeair-bs/rest/api",
-	
-	"supportservice_port": 9085,
-	"supportContextRoot": "/acmeair-ss",
+	"port":80,
+	"contextRoot": "",	
 
-    "websocketPort" : 9001,
-
-	"watsonUrl" : "https://gateway.watsonplatform.net/dialog/api",
-	"watsonUsername" : "watsonUser",
-	"watsonPassword" : "watsonPass",
-	"watsonVersion" : "v1",
-	"watsonDialogFile" : "acmeair-v1.xml",
-	"watsonDialogName" : "acmeair",
-	"watsonUpdateDialog" : true,
-		
+	"mongoDatabaseName" : "acmeair",
 	"mongoHost" : "127.0.0.1",
 	"mongoPort" : 27017,
 	"mongoConnectionPoolSize": 10,
-	"mongoUsername": "mongo",
-	"mongoPassword": "password",
-
-	"cloudant_host": "your host",
-	"cloudant_port": 443,
-	"cloudant_username": "your username",
-	"cloudant_password":"your password",
-	"cloudant_httpclient.maxTotal":200,
-	"cloudant_httpclient.maxPerRoute":100,
-	"cloudant_httpclient.soTimeout":5000,
-	"cloudant_httpclient.connectionTimeout":5000,
-
-	"cassandra_contactPoints" : ["your ip"],
-	"cassandra_keyspace" : "acmeair_keyspace",
+	"mongoUsername": "",
+	"mongoPassword": "",
 
 	"useFlightDataRelatedCaching" : true,
 	

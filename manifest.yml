@@ -1,5 +1,0 @@
----
-applications:
-- name: acme-cloudant
-  env:
-    dbtype: cloudant

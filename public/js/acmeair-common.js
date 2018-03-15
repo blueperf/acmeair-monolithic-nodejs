@@ -57,7 +57,7 @@ function login() {
 			login: userString,
 			password: document.getElementById('password').value
 		},
-		url: 'http://' + window.location.host + '/auth/acmeair-as/rest/api/login',
+		url: 'auth/login',
 		load: function(response, ioArgs) {
 			hideLoginWaitDialog();
 			if (response != 'logged in') {
@@ -86,7 +86,7 @@ function logout() {
 		content : {
 			login: loggedinuser
 		},
-		url: 'http://' + window.location.host + '/auth/acmeair-as/rest/api/login/logout',
+		url: 'auth/login/logout',
 		load: function(response, ioArgs) {
 			if (response != 'logged out') {
 				// TODO: why isn't error function being called in this case
@@ -104,7 +104,7 @@ function logout() {
 
 function loaddb() {
 	dojo.xhrGet({
-		url: 'rest/api/loaddb',
+		url: 'loaddb',
 		load: function(response, ioArgs) {
 		},
 		error: function(response, ioArgs) {

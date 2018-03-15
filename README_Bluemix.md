@@ -6,110 +6,39 @@ Assume you have access to [Bluemix](https://console.ng.bluemix.net).
 	
 	cf login
 
-### Run Acmeair in Monolithic mode
+#### Create Mongo DB service
+	   
+Option 1 : Go to Bluemix Catalog, then create a "Compose for MongoDB" service provided by IBM
+
+Option 2 : [Setup Compose Mongo DB & create acmeair database](https://www.compose.io/mongodb/)
+
+* Retrieve & save these information from Compose Mongo DB
+
+	hostname,"port", "db", "username", "password”
+
+	Create a string:
+	
+	"url": "mongodb://username:password@hostname:port/db"
+	e.g. mongodb://acmeuser:password@myServer.dblayer.com:27017/acmeair
+
+* On cf cli, run following commands to create Compose Mongo DB service on Bluemix:
+
+	Use CF command to create DB:
+	cf cups mongoCompose -p "url"
+	
+	At the URL prompt, enter above URL that was created:
+	url>mongodb://acmeuser:password@myServer.dblayer.com:27017/acmeair
 
 
-#### Push Application
-
-	cf push acmeair-nodejs --no-start -c "node app.js"
-
-Note that "acmeair-nodejs" is the application name and will be used for the hostname of the application. It needs to be unique so many need to add an 
-
-identifies to it to make it unique. You could use the initials of your name.
+### Preparation
+	Edit [Bluemix_CF.sh](Bluemix_CF.sh) to change application name (appName).  "acmeair-node" is the application name and will be used for the hostname of the application. Add an identifiers to it to make it unique. (e.g. You could use the initials of your name.)
+	Also change the Mongo DB Service name (mongoService).  ""
 		
 
-#### Create any one of the services
-	   
-Mongo: 
-
-	cf create-service mongodb 100 acmeairMongo
-   			
-Cloudant:
-
-	cf create-service cloudantNoSQLDB Shared acmeairCL
-
-	Note: use the content from document/DDL/cloudant.ddl to create database and define search index 
-
-#### Bind service to application
+#### Create & start application
+	Run previously modified shell script (make sure to change the permission of the file). It will deploy the application to Cloud Foundry, bind Mongo DB service, then startup the Acmeair Application.
+	chmod 755 Bluemix_CF.sh
+	./Bluemix_CF.sh
 	
-	cf bind-service acmeair-nodejs acmeairMongo
-	
-	or
-	
-	cf bind-service acmeair-nodejs acmeairCL
-
-
-#### Start application and Access application URL
-	
-	cf start acmeair-nodejs
-	
-	http://acmeair-nodejs.mybluemix.net	
-
-
-### Run Acmeair in Microservices mode
-
-#### You must first deploy the Acmeair in Monolithic mode before proceeding.
-
-#### Push the extra services
-
-	cf push acmeair-as  --no-start -c "node authservice_app.js"
-	cf push acmeair-cs  --no-start -c "node customerservice_app.js"
-	cf push acmeair-fbs --no-start -c "node flightbookingservice_app.js"
-
-Again, the application names needs to be unique.
-
-#### Bind the mongodb service to service applications
-	
-	cf bind-service acmeair-as acmeairMongo
-	cf bind-service acmeair-cs acmeairMongo
-	cf bind-service acmeair-fbs acmeairMongo
-	
-	or
-	
-	cf bind-service acmeair-as acmeairCL
-	cf bind-service acmeair-cs acmeairCL
-	cf bind-service acmeair-fbs acmeairCL
-
-#### Now that the authentication service is running, you can configure the web application to use it by setting the following user defined environment 
-
-variable stopping the application first
-
-	cf stop acmeair-nodejs
-	cf set-env acmeair-nodejs AUTH_SERVICE acmeair-as.mybluemix.net:80
-	cf set-env acmeair-nodejs CUSTOMER_SERVICE acmeair-cs.mybluemix.net:80
-	cf set-env acmeair-nodejs FLIGHTBOOKING_SERVICE acmeair-authservice.mybluemix.net:80 acmeair-fbs.mybluemix.net:80
-
-#### Enable Hystrix by setting the following user defined environment variable
-
-	cf set-env acmeair-nodejs enableHystrix true
-
-
-#### Now start the services and the web application
-
-	cf start acmeair-as
-	cf start acmeair-cs
-	cf start acmeair-fbs
-	cf start acmeair-nodejs
-
-	Now go to http://acmeair-nodejs.mybluemix.net and login. That login uses the authentication microservice. 
-
-#### You can run the Hystrix Dashboard in Bluemix as well. To deploy the Hystrix dashboard, you need to download the WAR file for the dashboard. You
-can find a link to the download here: https://github.com/Netflix/Hystrix/wiki/Dashboard#installing-the-dashboard. The following CF CLI command will deploy 
-
-the Hystrix dashboard to Bluemix:
-
-	cf push acmeair-hystrix -p hystrix-dashboard-1.4.5.war
-
-At the time of this writing, the latest version of the WAR file was 1.4.5. Make sure you get the latest version. Note that as before, "acmeair-hystrix" needs 
-
-to be unique. The WAR file will get deployed to the Liberty for Java runtime in Bluemix. Once the hystrix dashboard app is running, you will be able to 
-
-access the dashboard using the following route:
-
-	http://acmeair-hystrix.mybluemix.net
-
-To monitor the Acme Air authentication service, you need to monitor the following hystrix event stream:
-
-	http://acmeair-nodejs.mybluemix.net/rest/api/hystrix.stream
-
-Specify that stream on the Hystrix Dashboard home page and click the Monitor.
+	Access application with the following URL (use your application name instead of "acmeair-node")	
+	http://acmeair-node.mybluemix.net
