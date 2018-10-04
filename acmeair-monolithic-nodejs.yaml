@@ -24,6 +24,10 @@ spec:
           value: "27017"
         - name: MONGO_DBNAME
           value: "acmeair-db"
+        - name: MONGO_USER
+          value: "user"
+        - name: MONGO_PASSWORD
+          value: "password"
         resources:
           requests:
             cpu: "700m"

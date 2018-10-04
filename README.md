@@ -1,89 +1,55 @@
 
 # Acme Air in NodeJS 
 
-An implementation of the Acme Air sample application for NodeJS.  This implementation is a monolithic mode & mainly supports Mongo DB (both standalone & Compose Mongo DB).  It can support running on a variety of runtime platforms including standalone bare metal  system, Virtual Machines, docker containers, IBM Bluemix  Cloud Foundry Service and IBM Bluemix Container Service.
+An implementation of the Acme Air sample application for NodeJS.  This implementation is a monolithic mode & supports Mongo DB (both standalone & Compose Mongo DB).  The application can be deployed both on-prem as well as on Cloud platforms. 
 
-## Content
+# Setup
 
-### Runtime Environment
-
-[NodeJs](http://nodejs.org/download/)
-
-### Datastore Choices
-
-Environment variable dbtype is used to determine the datastore choice. MongoDB is default. See under "More on configurations".
-
-* [Compose MongoDB](https://www.compose.com/mongodb) 
-* [Compose MongoDB Bluemix Service](https://console.ng.bluemix.net/catalog/services/compose-for-mongodb/) 
-* [MongoDB Standalone](http://www.mongodb.org) 
+  **Setup DB**
+ - First, create a Compost account, then create a Mongo DB Deployment (It is a paid service with 30 days free trial)
+ - Create a database with the name "acmeair"
+ - get these information:
+   - "hostname
+   - "port"
+   - "db"
+   - "username"
+   - "password"
  
-### Application Run Platforms
+# For CF
+ - ibmcloud cf push acme-node-myname -m 512M
 
-* [Bluemix Cloud Foundry Instructions](README_Bluemix.md)
-* [Bluemix Container Service Instructions](README_Bluemix_Container.md)
+Add these environment variables and restage
+   - MONGO_MANUAL : true
+   - MONGO_HOST : <hostname>
+   - MONGO_PORT : <port>
+   - MONGO_DBNAME : <db>
+   - MONGO_USER : <username>
+   - MONGO_PASSWORD : <password>
 
+(Alternative) 
+**Create user provided DB Service**
+- Create a string using Compose database information:
+   - "url": "mongodb://username:password@hostname:port/db"
+   - e.g. mongodb://acmeuser:password@myServer.dblayer.com:27017/acmeair
+ 
+- Use CF command to create DB:
+   - cf cups mongodbCompose -p "url"
+   - At the URL prompt, enter above URL that was created:
+   - url>mongodb://acmeuser:password@myServer.dblayer.com:27017/acmeair
+ 
+- On IBM Cloud Dasboard, bind the created mongodbCompose service to Acmeair
+   - restage/restart Acmeair application 
 
-## How to get started
+# For Kubernetes Services
+ - docker build -f ./Dockerfile_KS -t registry.**REGION**.bluemix.net/**NAMESPACE**/IMAGENAME .
+ - docker push registry.**REGION**.bluemix.net/**NAMESPACE**/IMAGENAME
+ - Modify acmeair-monolithic-nodejs.yaml to add registry.**REGION**.bluemix.net/**NAMESPACE**/IMAGENAME as the image name
+ - Modify acmeair-monolithic-nodejs.yaml to add DB connection information (Note: If there is no user setup for this DB, REMOVE MONGO_USER & MONGO_PASSWORD entries)
+ - kubectl create -f ./acmeair-monolithic-node.s.yaml
 
-Assume MongoDB started on 127.0.0.1:27017
-
-### Resolve module dependencies
-
-	npm install
-	node_modules/.bin/npm install 
-
-### Run Acmeair in Monolithic on Local
-Change "port" in settings.json from 80 to 9080
-
-	node app.js
-	
-### Access Monolithic Application 
-
-	http://localhost:9080
-
-## More on Configurations
-
-### Environment Variables
-
-Name | Default | Meaning
---- | --- | ---
-dbtype | mongo | You can switch datastore choices.
-MONGO_URL||Mongo database URL. Take precedence after Mongo DB Services, over other settings
-
-### Configuration for Runtime
-
-Default values are defined [here](settings.json)
-
-Name | Default | Meaning
---- |:---:| ---
-mongoHost | 127.0.0.1 | MongoDB host ip
-mongoPort | 27017 | MongoDB port
-mongoConnectionPoolSize | 10 | MongoDB connection pool size
-
-* When running on Bluemix, datasource url will be read from bound service information.
-
-### Configuration for Preload
-
-Default values are defined [here](loader/loader-settings.json)
-
-Name | Default | Meaning
---- |:---:| ---
-MAX_CUSTOMERS | 10000 |  number of customers
-MAX_DAYS_TO_SCHEDULE_FLIGHTS | 30 | max number of days to schedule flights
-MAX_FLIGHTS_PER_DAY | 1 | max flights per day
-
-## Other Topics
-
-### How to extend with more datasource types
-
-* Create a folder under dataaccess with the new dbtype name. Look at current implementation for reference.
-
-
-* When drive acmeair workload, you need follow the [instruction](https://github.com/acmeair/acmeair/wiki/jMeter-Workload-Instructions) to use -DusePureIDs=true when starting jmeter.
-
-### ICP ###
- For ICP, add the URL path in settings.json
- e.g. "contextRoot": "/node"
- Add the same extension in ingICP.yaml
- e.g. path: /node
-
+# Database loading
+ - Go to the home page http://hostname:port
+ - At the bottom of the page, click the link : Configure the Acme Air Environment > Click **Load the database**
+ 
+# Driving the load
+ - Follow the instruction [here](https://github.com/blueperf/acmeair-driver)
